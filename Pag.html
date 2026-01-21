@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Fashions — Portafolio de Modelaje</title>
+  <meta name="description" content="Portafolio de modelaje estilo Fashions. Fotos, videos, noticias y contacto." />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#e0e0e9; --card:#c7c7d4; --accent:#e91e63; --accent-2:#ff6b9a; --muted:#9aa0a6;
+      --glass: rgba(230, 219, 219, 0.922); --maxw:1200px; --radius:12px;
+    }
+    /* Alternate palettes */
+    .palette-minimal { --bg:#ffffff; --card:#f7f7f8; --accent:#111827; --accent-2:#374151; --muted:#6b7280; color-scheme:light; }
+    .palette-neutral { --bg:#0f1724; --card:#0b1220; --accent:#8b5cf6; --accent-2:#06b6d4; --muted:#94a3b8; }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;font-family:Inter,system-ui,Arial;background:linear-gradient(180deg,var(--bg),#050506);color:#fff;
+      -webkit-font-smoothing:antialiased;line-height:1.45;padding-bottom:40px;
+    }
+    .container{max-width:var(--maxw);margin:0 auto;padding:28px;}
+    header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 0}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{
+      width:64px;height:64px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      display:flex;align-items:center;justify-content:center;font-family:Playfair Display,serif;font-weight:700;font-size:26px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.18);
+    }
+    nav a{color:var(--muted);text-decoration:none;margin-left:18px;font-weight:600}
+    nav a:hover{color:var(--accent)}
+    .hero{display:grid;grid-template-columns:1fr 380px;gap:28px;align-items:center;margin:28px 0;}
+    .hero-left h1{font-family:Playfair Display,serif;font-size:44px;margin:0 0 12px;color:var(--accent-2)}
+    .hero-left p{color:var(--muted);margin:0 0 18px;font-size:16px}
+    .cta{display:inline-block;padding:12px 18px;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;border-radius:10px;text-decoration:none;font-weight:700}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);border-radius:var(--radius);padding:16px;box-shadow:0 8px 30px rgba(0,0,0,0.6)}
+    /* Gallery */
+    .controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+    .filter-btn{padding:8px 12px;border-radius:999px;background:rgba(255,255,255,0.03);color:var(--muted);border:none;cursor:pointer}
+    .filter-btn.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff}
+    .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .gallery figure{margin:0;position:relative;overflow:hidden;border-radius:10px;cursor:pointer}
+    .gallery img{width:100%;height:260px;object-fit:cover;display:block;transition:transform .28s}
+    .gallery figure:hover img{transform:scale(1.04)}
+    .caption{position:absolute;left:12px;bottom:12px;background:rgba(0,0,0,0.45);padding:6px 10px;border-radius:8px;font-size:13px}
+    /* Media and news */
+    .media-grid{display:grid;grid-template-columns:2fr 1fr;gap:16px}
+    .video-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .video-thumb{position:relative;border-radius:10px;overflow:hidden;cursor:pointer}
+    .video-thumb img{width:100%;height:160px;object-fit:cover;display:block}
+    .play-icon{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.5);padding:10px;border-radius:50%;color:#fff;font-weight:700}
+    .news-list{display:flex;flex-direction:column;gap:12px}
+    .news-item{display:flex;gap:12px;align-items:flex-start}
+    .news-item img{width:84px;height:64px;object-fit:cover;border-radius:8px}
+    .vision-mission{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+    .contact-grid{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+    .contact-card{flex:1 1 220px;padding:14px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent)}
+    footer{margin-top:28px;padding:18px 0;color:var(--muted);font-size:14px;text-align:center}
+    /* Overlay */
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.86);display:flex;align-items:center;justify-content:center;padding:20px;z-index:60;opacity:0;pointer-events:none;transition:opacity .18s}
+    .overlay.open{opacity:1;pointer-events:auto}
+    .overlay .content{max-width:1100px;width:100%;max-height:92vh;overflow:auto;border-radius:8px}
+    .overlay img, .overlay iframe{width:100%;height:auto;border-radius:8px;display:block}
+    /* Form */
+    form .row{display:flex;gap:8px}
+    form input, form textarea{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:#fff}
+    form button{padding:10px 14px;border-radius:8px;border:none;background:var(--accent);color:#fff;cursor:pointer}
+    /* Helpers */
+    .muted{color:var(--muted)}
+    .tag{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.03);color:var(--muted);font-size:13px}
+    @media (max-width:980px){
+      .hero{grid-template-columns:1fr;gap:18px}
+      .gallery{grid-template-columns:repeat(2,1fr)}
+      .media-grid{grid-template-columns:1fr;gap:12px}
+      .vision-mission{grid-template-columns:1fr}
+    }
+    @media (max-width:520px){
+      .gallery img{height:160px}
+      .logo{width:52px;height:52px;font-size:20px}
+      nav a{margin-left:10px;font-size:14px}
+      .video-grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="app">
+    <header>
+      <div class="brand">
+        <div>
+          <img src="Modellare. PNG.png" alt="" style="width:400px;height:100px;vertical-align:middle;margin-right:10px;border-radius:10px;object-fit:cover">
+          <div style="font-size:13px;color:var(--muted)">Modelaje · Editorial · Noticias</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px">
+        <nav style="display:flex;align-items:center">
+          <a href="#galeria">Fotos</a>
+          <a href="#videos" style="margin-left:12px">Videos</a>
+          <a href="#noticias" style="margin-left:12px">Noticias</a>
+          <a href="#contacto" style="margin-left:12px">Contacto</a>
+        </nav>
+
+        <!-- Palette selector -->
+        <select id="paletteSelect" aria-label="Selector de paleta" style="margin-left:16px;padding:8px;border-radius:8px;background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.04)">
+          <option value="default">Fashions Pink</option>
+          <option value="minimal">Minimal Light</option>
+          <option value="neutral">Neutral</option>
+        </select>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-left">
+        <h1>Moda que cuenta historias</h1>
+        <p class="muted">Plataforma para modelos, fotógrafos y creativos. Publica sesiones, videos editoriales y noticias del mundo fashion.</p>
+        <a class="cta" href="#contacto">Contáctanos</a>
+      </div>
+
+      <aside class="card" aria-labelledby="contact-quick">
+        <h3 id="contact-quick" style="margin-top:0">Contacto rápido</h3>
+        <div style="margin:8px 0;color:var(--muted)"><strong>Correo</strong></div>
+        <div><a id="emailLink" href="mailto:info@fashions.example" style="color:#fff;text-decoration:none;font-weight:600">info@fashions.example</a></div>
+        <div style="margin:12px 0;color:var(--muted)"><strong>Teléfono</strong></div>
+        <div><a id="phoneLink" href="tel:+573001234567" style="color:#fff;text-decoration:none;font-weight:600">+57 300 123 4567</a></div>
+        <div style="margin-top:12px;color:var(--muted)"><strong>Redes</strong></div>
+        <div style="margin-top:8px"><a href="#" style="color:var(--muted);text-decoration:none;margin-right:8px">Instagram</a><a href="#" style="color:var(--muted);text-decoration:none;margin-right:8px">TikTok</a><a href="#" style="color:var(--muted);text-decoration:none">LinkedIn</a></div>
+      </aside>
+    </section>
+
+    <!-- GALERÍA -->
+    <section id="galeria" style="margin:18px 0">
+      <h2>Galería</h2>
+      <div class="card" style="padding:14px">
+        <div class="controls" id="filters" role="tablist" aria-label="Filtros de galería">
+          <button class="filter-btn active" data-filter="all" role="tab" aria-selected="true">Todas</button>
+          <button class="filter-btn" data-filter="editorial" role="tab">Editorial</button>
+          <button class="filter-btn" data-filter="pasarela" role="tab">Pasarela</button>
+          <button class="filter-btn" data-filter="lookbook" role="tab">Lookbook</button>
+        </div>
+
+        <div class="gallery" id="gallery" aria-live="polite">
+          <!-- Imágenes generadas por JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- VIDEOS Y NOTICIAS -->
+    <section id="videos" style="margin:18px 0">
+      <h2>Videos</h2>
+      <div class="media-grid">
+        <div class="card">
+          <div class="video-grid" id="videoGrid">
+            <!-- Thumbnails generadas por JS -->
+          </div>
+        </div>
+
+        <aside class="card news-list" id="noticias">
+          <h3 style="margin-top:0">Noticias</h3>
+          <div id="newsContainer">
+            <!-- Noticias generadas por JS -->
+          </div>
+          <a href="#" style="color:var(--accent);font-weight:700;text-decoration:none;margin-top:8px;display:inline-block">Ver todas las noticias</a>
+        </aside>
+      </div>
+    </section>
+
+    <!-- VISIÓN Y MISIÓN -->
+    <section style="margin:18px 0" class="vision-mission">
+      <div class="card">
+        <h3 style="margin-top:0">Visión</h3>
+        <p class="muted">Ser la plataforma de referencia regional para talento de modelaje, impulsando carreras con creatividad y proyección internacional.</p>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">Misión</h3>
+        <p class="muted">Descubrir, formar y posicionar talento mediante producciones de alta calidad, alianzas estratégicas y presencia digital.</p>
+      </div>
+    </section>
+
+    <!-- CONTACTO Y MAPA -->
+    <section id="contacto" style="margin:18px 0">
+      <h2>Contacto y Ubicación</h2>
+      <div class="contact-grid">
+        <div class="contact-card card">
+          <h4 style="margin-top:0">Escríbenos</h4>
+          <form id="contactForm">
+            <div style="margin-bottom:8px"><input id="name" name="name" placeholder="Nombre" required></div>
+            <div style="margin-bottom:8px"><input id="email" name="email" type="email" placeholder="Correo" required></div>
+            <div style="margin-bottom:8px"><input id="phone" name="phone" placeholder="Teléfono (opcional)"></div>
+            <div style="margin-bottom:8px"><textarea id="message" name="message" rows="4" placeholder="Mensaje" required></textarea></div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <button type="submit">Enviar</button>
+              <div class="muted" style="font-size:13px">Se abrirá tu cliente de correo si no hay servidor configurado</div>
+            </div>
+          </form>
+        </div>
+
+        <div class="contact-card card">
+          <h4 style="margin-top:0">Teléfono</h4>
+          <p class="muted">Llamadas y WhatsApp</p>
+          <a id="phoneDisplay" href="tel:+573001234567" style="color:#fff;font-weight:700;text-decoration:none">+57 300 123 4567</a>
+        </div>
+
+        <div class="contact-card card" style="flex:1 1 100%">
+          <h4 style="margin-top:0">Ubicación</h4>
+          <p class="muted" style="margin-bottom:8px">Bucaramanga, Santander. Edita las coordenadas en la variable <strong>mapCoords</strong> en el script.</p>
+          <iframe id="mapFrame"
+            src="https://maps.google.com/maps?q=7.119349,-73.122741&z=15&output=embed"
+            width="100%" height="300" style="border:0;border-radius:8px" allowfullscreen="" loading="lazy" title="Mapa de ubicación"></iframe>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div>© <strong>Fashions</strong> · Todos los derechos reservados</div>
+    </footer>
+  </div>
+
+  <!-- Overlay (modal) -->
+  <div id="overlay" class="overlay" aria-hidden="true" role="dialog" aria-modal="true" tabindex="-1">
+    <div class="content" id="overlayContent" role="document"></div>
+  </div>
+
+  <script>
+    /***** Datos iniciales: reemplaza por tus recursos *****/
+    const galleryData = [
+      {id:1, src:'https://via.placeholder.com/1600x1200?text=Editorial+1', thumb:'https://via.placeholder.com/800x600?text=Editorial+1', title:'Editorial 1', category:'editorial'},
+      {id:2, src:'https://via.placeholder.com/1600x1200?text=Pasarela+1', thumb:'https://via.placeholder.com/800x600?text=Pasarela+1', title:'Pasarela 1', category:'pasarela'},
+      {id:3, src:'https://via.placeholder.com/1600x1200?text=Lookbook+1', thumb:'https://via.placeholder.com/800x600?text=Lookbook+1', title:'Lookbook 1', category:'lookbook'},
+      {id:4, src:'https://via.placeholder.com/1600x1200?text=Editorial+2', thumb:'https://via.placeholder.com/800x600?text=Editorial+2', title:'Editorial 2', category:'editorial'},
+      {id:5, src:'https://via.placeholder.com/1600x1200?text=Pasarela+2', thumb:'https://via.placeholder.com/800x600?text=Pasarela+2', title:'Pasarela 2', category:'pasarela'},
+      {id:6, src:'https://via.placeholder.com/1600x1200?text=Lookbook+2', thumb:'https://via.placeholder.com/800x600?text=Lookbook+2', title:'Lookbook 2', category:'lookbook'}
+    ];
+
+    const videosData = [
+      {id:'VIDEO_ID', thumb:'https://via.placeholder.com/800x450?text=Video+1', title:'Editorial Video 1'},
+      {id:'VIDEO_ID2', thumb:'https://via.placeholder.com/800x450?text=Video+2', title:'Behind the Scenes'}
+    ];
+
+    const newsData = [
+      {id:1, img:'https://via.placeholder.com/320x240?text=Noticia+1', title:'Desfile Otoño-Invierno 2026', excerpt:'Resumen breve de la pasarela y enlaces a la galería completa.'},
+      {id:2, img:'https://via.placeholder.com/320x240?text=Noticia+2', title:'Campaña de temporada', excerpt:'Lanzamiento de campaña con créditos y making-of.'}
+    ];
+
+    /* Mapa: cambia aquí las coordenadas si lo deseas */
+    const mapCoords = {lat:7.119349, lng:-73.122741};
+
+    /***** Elementos del DOM *****/
+    const galleryEl = document.getElementById('gallery');
+    const filters = document.getElementById('filters');
+    const videoGrid = document.getElementById('videoGrid');
+    const newsContainer = document.getElementById('newsContainer');
+    const overlay = document.getElementById('overlay');
+    const overlayContent = document.getElementById('overlayContent');
+    const paletteSelect = document.getElementById('paletteSelect');
+    const contactForm = document.getElementById('contactForm');
+
+    /***** Renderizado dinámico *****/
+    function renderGallery(filter='all'){
+      galleryEl.innerHTML = '';
+      const items = galleryData.filter(g => filter === 'all' ? true : g.category === filter);
+      items.forEach(item => {
+        const fig = document.createElement('figure');
+        fig.innerHTML = `
+          <img src="${item.thumb}" alt="${item.title}" loading="lazy" data-full="${item.src}">
+          <div class="caption">${item.title}</div>
+        `;
+        fig.addEventListener('click', () => openLightbox(item.src, 'image'));
+        galleryEl.appendChild(fig);
+      });
+    }
+
+    function renderVideos(){
+      videoGrid.innerHTML = '';
+      videosData.forEach(v => {
+        const div = document.createElement('div');
+        div.className = 'video-thumb';
+        div.innerHTML = `
+          <img src="${v.thumb}" alt="${v.title}">
+          <div class="play-icon" aria-hidden="true">▶</div>
+        `;
+        div.addEventListener('click', () => openLightbox('https://www.youtube.com/embed/' + encodeURIComponent(v.id) + '?autoplay=1', 'video'));
+        videoGrid.appendChild(div);
+      });
+    }
+
+    function renderNews(){
+      newsContainer.innerHTML = '';
+      newsData.forEach(n => {
+        const item = document.createElement('div');
+        item.className = 'news-item';
+        item.innerHTML = `
+          <img src="${n.img}" alt="${n.title}">
+          <div>
+            <h4>${n.title}</h4>
+            <div class="muted" style="font-size:13px">${n.excerpt}</div>
+          </div>
+        `;
+        newsContainer.appendChild(item);
+      });
+    }
+
+    // Inicial
+    renderGallery();
+    renderVideos();
+    renderNews();
+
+    // Filtros
+    filters.addEventListener('click', (e) => {
+      const btn = e.target.closest('button');
+      if(!btn) return;
+      document.querySelectorAll('.filter-btn').forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-selected','false');
+      });
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected','true');
+      const f = btn.dataset.filter;
+      renderGallery(f);
+    });
+
+    /***** Lightbox / modal *****/
+    function openLightbox(src, type){
+      overlayContent.innerHTML = '';
+      if(type === 'image'){
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = 'Imagen ampliada';
+        overlayContent.appendChild(img);
+      } else if(type === 'video'){
+        const iframe = document.createElement('iframe');
+        iframe.src = src;
+        iframe.width = '100%';
+        iframe.height = '560';
+        iframe.frameBorder = '0';
+        iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+        iframe.allowFullscreen = true;
+        overlayContent.appendChild(iframe);
+      }
+      overlay.classList.add('open');
+      overlay.setAttribute('aria-hidden','false');
+      overlay.focus();
+    }
+
+    function closeOverlay(){
+      overlay.classList.remove('open');
+      overlay.setAttribute('aria-hidden','true');
+      overlayContent.innerHTML = '';
+    }
+
+    overlay.addEventListener('click', (e) => {
+      if(e.target === overlay) closeOverlay();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'Escape' && overlay.classList.contains('open')) closeOverlay();
+    });
+
+    /***** Formulario de contacto (fallback mailto) *****/
+    function handleContact(e){
+      e.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const message = document.getElementById('message').value.trim();
+      if(!name || !email || !message) return alert('Por favor completa los campos requeridos.');
+      const subject = encodeURIComponent('Contacto desde sitio - ' + name);
+      const body = encodeURIComponent('Nombre: ' + name + '\nCorreo: ' + email + '\nTeléfono: ' + phone + '\n\nMensaje:\n' + message);
+      // Abre cliente de correo
+      window.location.href = 'mailto:casting@fashions.example?subject=' + subject + '&body=' + body;
+    }
+
+    // Evitar uso de onsubmit inline; se añade listener aquí
+    if(contactForm){
+      contactForm.addEventListener('submit', handleContact);
+    }
+
+    /***** Paleta dinámica *****/
+    paletteSelect.addEventListener('change', (e) => {
+      document.documentElement.classList.remove('palette-minimal','palette-neutral');
+      if(e.target.value === 'minimal') document.documentElement.classList.add('palette-minimal');
+      if(e.target.value === 'neutral') document.documentElement.classList.add('palette-neutral');
+      // default: no clase (Fashions Pink)
+    });
+
+    /***** Mapa dinámico (si quieres actualizar desde JS) *****/
+    const mapFrame = document.getElementById('mapFrame');
+    function updateMap(lat,lng){
+      if(!mapFrame) return;
+      mapFrame.src = `https://maps.google.com/maps?q=${lat},${lng}&z=15&output=embed`;
+    }
+    // Inicial con mapCoords
+    updateMap(mapCoords.lat, mapCoords.lng);
+
+    /***** Personalización rápida desde JS (opcional) *****/
+    // Cambia correo y teléfono desde aquí si lo prefieres
+    const emailLink = document.getElementById('emailLink');
+    const phoneLink = document.getElementById('phoneLink');
+    const phoneDisplay = document.getElementById('phoneDisplay');
+    if(emailLink) emailLink.href = 'mailto:info@fashions.example';
+    if(phoneLink) phoneLink.href = 'tel:+573001234567';
+    if(phoneDisplay) phoneDisplay.href = 'tel:+573001234567';
+  </script>
+</body>
+</html>
